@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from . models import *
 from django.contrib import messages
 
@@ -46,7 +46,11 @@ def edit_student(request):
     return render(request, "Students/edit-student.html", {})
 
 def student_list(request):
-    return render(request, "Students/students.html", {})
+    student_list = Student.objects.select_related('parent').all()
+    context = {'student_list': student_list}
+    return render(request, "Students/students.html", context)
 
 def view_student(request):
-    return render(request, "Students/student-details.html", {})
+    student = get_object_or_404(Student, student_id = slug)
+    context = {'student', student}
+    return render(request, "Students/student-details.html", context)
