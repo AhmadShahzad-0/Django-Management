@@ -56,8 +56,8 @@ def teacher_list(request):
     teachers = Teacher.objects.all()
     return render(request, 'Teachers/teachers.html', {'teachers': teachers})
 
-def view_teacher(request, teacher_id):
-    teacher = get_object_or_404(Teacher, id=teacher_id)
+def view_teacher(request, pk):
+    teacher = get_object_or_404(Teacher, id=pk)
     return render(request, 'teachers/teacher-details.html', {'teacher': teacher})
 
 def edit_teacher(request, pk):
@@ -117,5 +117,8 @@ def edit_teacher(request, pk):
 
     return render(request, 'Teachers/edit-teacher.html', {'teacher': teacher})
 
-def delete_teacher(request):
-    pass
+def delete_teacher(request, pk):
+    teacher = get_object_or_404(Teacher, pk=pk)
+    teacher.delete()
+    messages.success(request, "Teacher deleted successfully.")
+    return redirect('teacher_list')

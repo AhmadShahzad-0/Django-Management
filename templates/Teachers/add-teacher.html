@@ -9,10 +9,10 @@
 <div class="page-header">
 <div class="row align-items-center">
 <div class="col">
-<h3 class="page-title">Add Teachers</h3>
+<h3 class="page-title">Edit Teacher</h3>
 <ul class="breadcrumb">
-<li class="breadcrumb-item"><a href="teachers.html">Teachers</a></li>
-<li class="breadcrumb-item active">Add Teachers</li>
+<li class="breadcrumb-item"><a href="{% url 'teacher_list' %}">Teachers</a></li>
+<li class="breadcrumb-item active">Edit Teacher</li>
 </ul>
 </div>
 </div>
@@ -28,146 +28,174 @@
 <div class="col-12">
 <h5 class="form-title"><span>Basic Details</span></h5>
 </div>
+
 <div class="col-12 col-sm-6">
 <div class="form-group">
 <label>Teacher ID</label>
-<input type="text" class="form-control" name="teacher_id" required>
+<input type="text" class="form-control" name="teacher_id" value="{{ teacher.teacher_id }}" required>
 </div>
 </div>
+
 <div class="col-12 col-sm-6">
 <div class="form-group">
 <label>Name</label>
-<input type="text" class="form-control" name="teacher_name" required>
+<input type="text" class="form-control" name="teacher_name" value="{{ teacher.teacher_name }}" required>
 </div>
 </div>
+
 <div class="col-12 col-sm-6">
 <div class="form-group">
 <label>Gender</label>
 <select class="form-control" name="teacher_gender" required>
-<option value="">Select Gender</option>    
-<option value="Male">Male</option>
-<option value="Female">Female</option>
-<option value="Others">Others</option>
+    <option value="">Select Gender</option>
+    <option value="Male" {% if teacher.teacher_gender == 'Male' %}selected{% endif %}>Male</option>
+    <option value="Female" {% if teacher.teacher_gender == 'Female' %}selected{% endif %}>Female</option>
+    <option value="Others" {% if teacher.teacher_gender == 'Others' %}selected{% endif %}>Others</option>
 </select>
 </div>
 </div>
+
 <div class="col-12 col-sm-6">
 <div class="form-group">
 <label>Date of Birth</label>
-<input type="date" class="form-control" name="teacher_date_of_birth" required>
+<input type="date" class="form-control" name="teacher_date_of_birth" value="{{ teacher.teacher_date_of_birth|date:'Y-m-d' }}" required>
 </div>
 </div>
+
 <div class="col-12 col-sm-6">
 <div class="form-group">
 <label>Mobile</label>
-<input type="text" class="form-control" name="teacher_mobile" required>
+<input type="text" class="form-control" name="teacher_mobile" value="{{ teacher.teacher_mobile }}" required>
 </div>
 </div>
+
 <div class="col-12 col-sm-6">
 <div class="form-group">
 <label>Joining Date</label>
-<input type="date" class="form-control" name="teacher_joining_date" required>
+<input type="date" class="form-control" name="teacher_joining_date" value="{{ teacher.teacher_joining_date|date:'Y-m-d' }}" required>
 </div>
 </div>
+
 <div class="col-12 col-sm-6">
 <div class="form-group">
 <label>Qualification</label>
-<input class="form-control" type="text" name="teacher_qualification" required>
+<input class="form-control" type="text" name="teacher_qualification" value="{{ teacher.teacher_qualification }}" required>
 </div>
 </div>
+
 <div class="col-12 col-sm-6">
 <div class="form-group">
 <label>Experience</label>
-<input class="form-control" type="text" name="teacher_experience" required>
+<input class="form-control" type="text" name="teacher_experience" value="{{ teacher.teacher_experience }}" required>
 </div>
 </div>
+
 <div class="col-12 col-sm-6">
 <div class="form-group">
 <label>Class</label>
-<input class="form-control" type="text" name="teacher_class" required>
+<input class="form-control" type="text" name="teacher_class" value="{{ teacher.teacher_class }}" required>
 </div>
 </div>
+
 <div class="col-12 col-sm-6">
 <div class="form-group">
 <label>Section</label>
-<input class="form-control" type="text" name="teacher_section" required>
+<input class="form-control" type="text" name="teacher_section" value="{{ teacher.teacher_section }}" required>
 </div>
 </div>
+
 <div class="col-12 col-sm-6">
 <div class="form-group">
 <label>Subject</label>
-<input class="form-control" type="text" name="teacher_subject" required>
+<input class="form-control" type="text" name="teacher_subject" value="{{ teacher.teacher_subject }}" required>
 </div>
 </div>
+
 <!-- Image Upload -->
 <div class="col-12 col-sm-6">
-    <div class="form-group">
-        <label>Upload Photo</label>
-        <input type="file" class="form-control" name="teacher_image" accept="image/*">
-    </div>
+<div class="form-group">
+<label>Upload Photo</label>
+<input type="file" class="form-control" name="teacher_image" accept="image/*">
+{% if teacher.teacher_image %}
+    <img src="{{ teacher.teacher_image.url }}" height="80" class="mt-2">
+{% endif %}
 </div>
+</div>
+
 <div class="col-12">
-    <h5 class="form-title"><span>Login Details</span></h5>
+<h5 class="form-title"><span>Login Details</span></h5>
 </div>
+
 <div class="col-12 col-sm-6">
-    <div class="form-group">
-        <label>Username</label>
-        <input type="text" class="form-control" name="username" required>
-    </div>
+<div class="form-group">
+<label>Username</label>
+<input type="text" class="form-control" name="username" value="{{ teacher.user.username }}" required>
 </div>
+</div>
+
 <div class="col-12 col-sm-6">
-    <div class="form-group">
-        <label>Email ID</label>
-        <input type="email" class="form-control" name="email" required>
-    </div>
+<div class="form-group">
+<label>Email ID</label>
+<input type="email" class="form-control" name="email" value="{{ teacher.user.email }}" required>
 </div>
+</div>
+
+<!-- Password fields (optional - can leave blank if not changing) -->
 <div class="col-12 col-sm-6">
-    <div class="form-group">
-        <label>Password</label>
-        <input type="password" class="form-control" name="password" required>
-    </div>
+<div class="form-group">
+<label>New Password</label>
+<input type="password" class="form-control" name="password">
 </div>
+</div>
+
 <div class="col-12 col-sm-6">
-    <div class="form-group">
-        <label>Repeat Password</label>
-        <input type="password" class="form-control" name="confirm_password" required>
-    </div>
+<div class="form-group">
+<label>Repeat Password</label>
+<input type="password" class="form-control" name="confirm_password">
 </div>
+</div>
+
 <div class="col-12">
 <h5 class="form-title"><span>Address</span></h5>
 </div>
+
 <div class="col-12">
 <div class="form-group">
 <label>Address</label>
-<input type="text" class="form-control" name="teacher_address" required>
+<input type="text" class="form-control" name="teacher_address" value="{{ teacher.teacher_address }}" required>
 </div>
 </div>
+
 <div class="col-12 col-sm-6">
 <div class="form-group">
 <label>City</label>
-<input type="text" class="form-control" name="teacher_city" required>
+<input type="text" class="form-control" name="teacher_city" value="{{ teacher.teacher_city }}" required>
 </div>
 </div>
+
 <div class="col-12 col-sm-6">
 <div class="form-group">
 <label>State</label>
-<input type="text" class="form-control" name="teacher_state" required>
+<input type="text" class="form-control" name="teacher_state" value="{{ teacher.teacher_state }}" required>
 </div>
 </div>
+
 <div class="col-12 col-sm-6">
 <div class="form-group">
 <label>Zip Code</label>
-<input type="text" class="form-control" name="teacher_zipcode" required>
+<input type="text" class="form-control" name="teacher_zipcode" value="{{ teacher.teacher_zip_code }}" required>
 </div>
 </div>
+
 <div class="col-12 col-sm-6">
 <div class="form-group">
 <label>Country</label>
-<input type="text" class="form-control" name="teacher_country" required>
+<input type="text" class="form-control" name="teacher_country" value="{{ teacher.teacher_country }}" required>
 </div>
 </div>
+
 <div class="col-12">
-<button type="submit" class="btn btn-primary">Submit</button>
+<button type="submit" class="btn btn-primary">Save Changes</button>
 </div>
 </div>
 </form>
@@ -175,9 +203,8 @@
 </div>
 </div>
 </div>
-</div>
-</div>
 
+</div>
 </div>
 
 
