@@ -52,14 +52,14 @@
                             <td>{{ teacher.teacher_id }}</td>
                             <td>
                                 <h2 class="table-avatar">
-                                    <a href="#" class="avatar avatar-sm mr-2">
+                                    <a href="{% url 'view_teacher' teacher.id %}" class="avatar avatar-sm mr-2">
                                         {% if teacher.teacher_image %}
                                             <img class="avatar-img rounded-circle" src="{{ teacher.teacher_image.url }}" alt="User Image">
                                         {% else %}
                                             <img class="avatar-img rounded-circle" src="{% static 'assets/img/profiles/avatar-02.jpg' %}" alt="Default Image">
                                         {% endif %}
                                     </a>
-                                    <a href="#">{{ teacher.teacher_name }}</a>
+                                    <a href="{% url 'view_teacher' teacher.id %}">{{ teacher.teacher_name }}</a>
                                 </h2>
                             </td>
                             <td>{{ teacher.teacher_class }}</td>
