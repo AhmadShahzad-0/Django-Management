@@ -1,0 +1,30 @@
+from django.db import models
+from django.contrib.auth.models import User
+
+# Create your models here.
+class Teacher(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    teacher_id = models.CharField(max_length=100)
+    teacher_name = models.CharField(max_length=100)
+    teacher_gender = models.CharField(max_length=15, choices=[('Male', 'Male'), ('Female', 'Female'), ('Others', 'Others')])
+    teacher_date_of_birth = models.DateField()
+    teacher_mobile = models.CharField(max_length=15)
+    teacher_joining_date = models.DateField()
+    teacher_qualification = models.CharField(max_length=50)
+    teacher_experience = models.CharField(max_length=100)
+    teacher_image = models.ImageField(upload_to='teachers/', blank=True, null=True)
+    teacher_class = models.CharField(max_length=20)
+    teacher_section = models.CharField(max_length=5)
+    teacher_subject = models.CharField(max_length=50)
+
+
+    # Address
+    teacher_address = models.TextField()
+    teacher_city = models.CharField(max_length=100)
+    teacher_state = models.CharField(max_length=100)
+    teacher_zip_code = models.CharField(max_length=20)
+    teacher_country = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.teacher_name
+    
