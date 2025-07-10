@@ -10,3 +10,11 @@ class Department(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.department_id})"
+    
+class Subject(models.Model):
+    subject_id = models.CharField(max_length=20, unique=True)
+    subject_name = models.CharField(max_length=100)
+    subject_class = models.CharField(max_length=50)
+
+    def __str__(self):
+        return f"{self.subject_name} ({self.subject_class})"

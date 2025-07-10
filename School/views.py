@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Department
+from .models import Department, Subject
 from django.contrib import messages
 from datetime import datetime
 
@@ -61,3 +61,42 @@ def delete_department(request, pk):
     department.delete()
     messages.success(request, "Department deleted successfully.")
     return redirect('list_departments')
+
+# Add Subject
+def add_subject(request):
+    if request.method == 'POST':
+        subject_id = request.POST.get('subject_id')
+        subject_name = request.POST.get('subject_name')
+        subject_class = request.POST.get('subject_class')
+
+        Subject.objects.create(
+            subject_id=subject_id,
+            subject_name=subject_name,
+            subject_class=subject_class
+        )
+        return redirect('list_subjects')
+    return render(request, 'Subjects/add-subject.html')
+
+# List Subjects
+def list_subjects(request):
+    subjects = Subject.objects.all()
+    return render(request, 'Subjects/subjects.html', {'subjects': subjects})
+
+# Edit Subject
+def edit_subject(request, pk):
+    subject = get_object_or_404(Subject, pk=pk)
+
+    if request.method == 'POST':
+        subject.subject_id = request.POST.get('subject_id')
+        subject.subject_name = request.POST.get('subject_name')
+        subject.subject_class = request.POST.get('subject_class')
+        subject.save()
+        return redirect('list_subjects')
+
+    return render(request, 'Subjects/edit-subject.html', {'subject': subject})
+
+# Delete Subject
+def delete_subject(request, pk):
+    subject = get_object_or_404(Subject, pk=pk)
+    subject.delete()
+    return redirect('list_subjects')
