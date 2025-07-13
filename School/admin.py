@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Department, Subject
+from .models import Department, Subject, Notification
 
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
@@ -10,3 +10,7 @@ class DepartmentAdmin(admin.ModelAdmin):
 @admin.register(Subject)
 class SubjectAdmin(admin.ModelAdmin):
     list_display = ('subject_id', 'subject_name', 'subject_class')
+    search_fields = ('subject_id', 'subject_name', 'subject_class')
+    list_filter = ('subject_class',)
+
+admin.site.register(Notification)

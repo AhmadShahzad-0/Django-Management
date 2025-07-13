@@ -3,6 +3,8 @@ from . models import *
 from django.contrib import messages
 from django.http import HttpResponseForbidden, HttpResponseBadRequest
 from django.utils.dateparse import parse_date
+from School.views import *
+from School.utils import create_notification
 
 # Create your views here.
 def add_student(request):
@@ -39,7 +41,8 @@ def add_student(request):
         student = Student.objects.create(first_name=first_name, last_name=last_name, student_id=student_id, gender=gender, date_of_birth=date_of_birth, student_class=student_class, religion=religion, joining_date=joining_date, student_mobile=student_mobile, admission_number=admission_number, section=section, student_image=student_image, parent=parent)
         
         # Success Message
-        messages.success(request, "Student Information Added Successfully.")
+        create_notification(request.user, f"Added Student: {student.first_name} {student.last_name}")
+        messages.success(request, "Student added Successfully")
         # return render(request, "student_list")
 
     return render(request, "Students/add-student.html", {})
@@ -73,6 +76,7 @@ def edit_student(request, slug):
             student.student_image = request.FILES['student_image']
 
         student.save()
+        create_notification(request.user, f"Added Student: {student.first_name} {student.last_name}")
 
         # Save parent info if exists
         if parent:
@@ -94,7 +98,8 @@ def edit_student(request, slug):
 
 def student_list(request):
     student_list = Student.objects.select_related('parent').all()
-    context = {'student_list': student_list}
+    unread_notification = request.user.notification_set.filter(is_read=False)
+    context = {'student_list': student_list, 'unread_notification': unread_notification}
     return render(request, "Students/students.html", context)
 
 def view_student(request, slug):
@@ -107,6 +112,7 @@ def delete_student(request, slug):
         student= get_object_or_404(Student, slug=slug)
         student_name = f"{student.first_name} {student.last_name}"
         student.delete()
+        create_notification(request.user, f"Deleted student: {student_name}")
 
         return redirect("student_list")
     return HttpResponseForbidden()

@@ -1,16 +1,35 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Department, Subject
+from .models import Department, Subject, Notification
 from django.contrib import messages
 from datetime import datetime
+from django.http import JsonResponse, HttpResponseForbidden
 
 # Create your views here.
 def index(request):
     return render(request, "Home/index.html", {})
 
 def dashboard(request):
+    unread_notification = Notification.objects.filter(user=request.user, is_read=False)
+    unread_notification_count = unread_notification.count()
     return render(request, "Students/student-dashboard.html")
 
+def mark_notification_as_read(request):
+    if request.method == 'POST':
+        notification = Notification.objects.filter(user=request.user, is_read=False)
+        notification.update(is_read=True)
+        return JsonResponse({'status': 'success'})
+    return HttpResponseForbidden()
+
+def clear_all_notification(request):
+    if request.method == "POST":
+        notification = Notification.objects.filter(user=request.user)
+        notification.delete()
+        return JsonResponse({'status': 'success'})
+    return HttpResponseForbidden
+
 def teacher_dashboard(request):
+    unread_notification = Notification.objects.filter(user=request.user, is_read=False)
+    unread_notification_count = unread_notification.count()
     return render(request, "Teachers/teacher-dashboard.html")
 
 # Add Department

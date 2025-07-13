@@ -1,7 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.models import User
 from .models import Teacher
 from django.contrib import messages
+from School.utils import create_notification
+from django.http import HttpResponseForbidden
+from School.models import Notification
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+def teacher_dashboard(request):
+    unread_notification = Notification.objects.filter(user=request.user, is_read=False)
+    unread_notification_count = unread_notification.count()
+    return render(request, "Teachers/teacher-dashboard.html", {'unread_notification_count': unread_notification_count})
 
 def add_teacher(request):
     if request.method == 'POST':
@@ -47,6 +57,7 @@ def add_teacher(request):
             teacher_image=image
         )
 
+        create_notification(request.user, f"Added Teacher: {user.username}")
         messages.success(request, "Teacher added successfully.")
         return redirect('teacher_list')  # Replace with your URL name
 
@@ -54,7 +65,9 @@ def add_teacher(request):
 
 def teacher_list(request):
     teachers = Teacher.objects.all()
-    return render(request, 'Teachers/teachers.html', {'teachers': teachers})
+    unread_notification = request.user.notification_set.filter(is_read=False)
+    context = {'teachers': teachers, 'unread_notification': unread_notification}
+    return render(request, 'Teachers/teachers.html', context)
 
 def view_teacher(request, pk):
     teacher = get_object_or_404(Teacher, id=pk)
@@ -70,13 +83,14 @@ def edit_teacher(request, pk):
         email = request.POST.get('email')
 
         # Check if username is changed and already taken
-        if user.username != username and User.objects.filter(username=username).exists():
+        if user.username != username and User.objects.filter(username=username).exclude(pk=user.pk).exists():
             messages.error(request, "Username already exists.")
             return redirect('edit_teacher', pk=teacher.pk)
 
         user.username = username
         user.email = email
         user.save()
+
 
         # Handle optional password update
         password = request.POST.get('password')
@@ -111,6 +125,7 @@ def edit_teacher(request, pk):
         teacher.teacher_section = request.POST.get('teacher_section')
         teacher.teacher_subject = request.POST.get('teacher_subject')
         teacher.save()
+        create_notification(request.user, f"Updated Teacher: {teacher.teacher_name}")
 
         messages.success(request, "Teacher updated successfully.")
         return redirect('view_teacher', pk=teacher.pk)
@@ -120,5 +135,6 @@ def edit_teacher(request, pk):
 def delete_teacher(request, pk):
     teacher = get_object_or_404(Teacher, pk=pk)
     teacher.delete()
+    create_notification(request.user, f"Deleted Teacher: {teacher.teacher_name}")
     messages.success(request, "Teacher deleted successfully.")
     return redirect('teacher_list')
