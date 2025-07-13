@@ -7,6 +7,12 @@ from datetime import datetime
 def index(request):
     return render(request, "Home/index.html", {})
 
+def dashboard(request):
+    return render(request, "Students/student-dashboard.html")
+
+def teacher_dashboard(request):
+    return render(request, "Teachers/teacher-dashboard.html")
+
 # Add Department
 def add_department(request):
     if request.method == 'POST':
