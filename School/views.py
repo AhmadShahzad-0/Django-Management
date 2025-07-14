@@ -34,7 +34,7 @@ def teacher_dashboard(request):
     
     # Assuming you have a field like `is_teacher` on your user model or profile
     if not hasattr(request.user, 'is_teacher') or not request.user.is_teacher:
-        return HttpResponseForbidden("You can't access this page.")
+        return render(request, "403.html", status=403)
     
     # Fetch unread notifications for the teacher
     unread_notification = Notification.objects.filter(user=request.user, is_read=False)

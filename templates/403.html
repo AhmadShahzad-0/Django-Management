@@ -1,0 +1,9 @@
+{% extends 'Home/base.html' %}
+{% load static %}
+{% block body %}
+<div class="forbidden-page" style="text-align: center; margin-top: 100px;">
+    <h1 style="font-size: 48px; color: #e74c3c;">403 - Forbidden</h1>
+    <p style="font-size: 20px;">🚫 Sorry, you don't have permission to access this page.</p>
+    <a href="{% url 'dashboard' %}" style="display: inline-block; margin-top: 20px; padding: 10px 20px; background: #3498db; color: white; border-radius: 5px; text-decoration: none;">Go Back to Student Dashboard</a>
+</div>
+{% endblock %}
