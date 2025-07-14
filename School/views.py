@@ -11,7 +11,8 @@ def index(request):
 def dashboard(request):
     unread_notification = Notification.objects.filter(user=request.user, is_read=False)
     unread_notification_count = unread_notification.count()
-    return render(request, "Students/student-dashboard.html")
+    return render(request, "Students/student-dashboard.html", {
+        'unread_notification_count': unread_notification_count,})
 
 def mark_notification_as_read(request):
     if request.method == 'POST':
@@ -28,9 +29,18 @@ def clear_all_notification(request):
     return HttpResponseForbidden
 
 def teacher_dashboard(request):
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden("You must be logged in to access this page.")
+    
+    # Assuming you have a field like `is_teacher` on your user model or profile
+    if not hasattr(request.user, 'is_teacher') or not request.user.is_teacher:
+        return HttpResponseForbidden("You can't access this page.")
+    
+    # Fetch unread notifications for the teacher
     unread_notification = Notification.objects.filter(user=request.user, is_read=False)
     unread_notification_count = unread_notification.count()
-    return render(request, "Teachers/teacher-dashboard.html")
+    return render(request, "Teachers/teacher-dashboard.html", {
+        'unread_notification_count': unread_notification_count,})
 
 # Add Department
 def add_department(request):

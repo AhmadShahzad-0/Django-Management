@@ -5,17 +5,13 @@ from School.utils import create_notification
 from django.http import HttpResponseForbidden
 from School.models import Notification
 from django.contrib.auth import get_user_model
+from django.db import transaction, IntegrityError
+from django.utils.dateparse import parse_date
 
 User = get_user_model()
 
-def teacher_dashboard(request):
-    unread_notification = Notification.objects.filter(user=request.user, is_read=False)
-    unread_notification_count = unread_notification.count()
-    return render(request, "Teachers/teacher-dashboard.html", {'unread_notification_count': unread_notification_count})
-
 def add_teacher(request):
     if request.method == 'POST':
-        # User fields
         username = request.POST.get('username')
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -29,37 +25,45 @@ def add_teacher(request):
             messages.error(request, "Username already exists.")
             return redirect('add_teacher')
 
-        # Create User
-        user = User.objects.create_user(username=username, email=email, password=password)
+        dob = parse_date(request.POST.get('teacher_date_of_birth'))
+        joining_date = parse_date(request.POST.get('teacher_joining_date'))
+        if not dob or not joining_date:
+            messages.error(request, "Invalid date format.")
+            return redirect('add_teacher')
 
-        # Handle uploaded image
-        image = request.FILES.get('teacher_image')
+        try:
+            with transaction.atomic():
+                user = User.objects.create_user(username=username, email=email, password=password)
+                user.save()
 
-        # Create Teacher
-        Teacher.objects.create(
-            user=user,
-            teacher_id=request.POST.get('teacher_id'),
-            teacher_name=request.POST.get('teacher_name'),
-            teacher_gender=request.POST.get('teacher_gender'),
-            teacher_date_of_birth=request.POST.get('teacher_date_of_birth'),
-            teacher_mobile=request.POST.get('teacher_mobile'),
-            teacher_joining_date=request.POST.get('teacher_joining_date'),
-            teacher_qualification=request.POST.get('teacher_qualification'),
-            teacher_experience=request.POST.get('teacher_experience'),
-            teacher_address=request.POST.get('teacher_address'),
-            teacher_city=request.POST.get('teacher_city'),
-            teacher_state=request.POST.get('teacher_state'),
-            teacher_zip_code=request.POST.get('teacher_zipcode'),
-            teacher_country=request.POST.get('teacher_country'),
-            teacher_class=request.POST.get('teacher_class'),
-            teacher_section=request.POST.get('teacher_section'),
-            teacher_subject=request.POST.get('teacher_subject'),
-            teacher_image=image
-        )
+                teacher = Teacher.objects.create(
+                    user=user,
+                    teacher_id=request.POST.get('teacher_id'),
+                    teacher_name=request.POST.get('teacher_name'),
+                    teacher_gender=request.POST.get('teacher_gender'),
+                    teacher_date_of_birth=dob,
+                    teacher_mobile=request.POST.get('teacher_mobile'),
+                    teacher_joining_date=joining_date,
+                    teacher_qualification=request.POST.get('teacher_qualification'),
+                    teacher_experience=request.POST.get('teacher_experience'),
+                    teacher_address=request.POST.get('teacher_address'),
+                    teacher_city=request.POST.get('teacher_city'),
+                    teacher_state=request.POST.get('teacher_state'),
+                    teacher_zip_code=request.POST.get('teacher_zipcode'),
+                    teacher_country=request.POST.get('teacher_country'),
+                    teacher_class=request.POST.get('teacher_class'),
+                    teacher_section=request.POST.get('teacher_section'),
+                    teacher_subject=request.POST.get('teacher_subject'),
+                    teacher_image=request.FILES.get('teacher_image')
+                )
 
-        create_notification(request.user, f"Added Teacher: {user.username}")
-        messages.success(request, "Teacher added successfully.")
-        return redirect('teacher_list')  # Replace with your URL name
+                create_notification(request.user, f"Added Teacher: {user.username}")
+                messages.success(request, "Teacher added successfully.")
+                return redirect('teacher_list')
+
+        except IntegrityError as e:
+            messages.error(request, f"Database error: {e}")
+            return redirect('add_teacher')
 
     return render(request, 'Teachers/add-teacher.html')
 
@@ -128,7 +132,7 @@ def edit_teacher(request, pk):
         create_notification(request.user, f"Updated Teacher: {teacher.teacher_name}")
 
         messages.success(request, "Teacher updated successfully.")
-        return redirect('view_teacher', pk=teacher.pk)
+        return redirect('teacher_list')
 
     return render(request, 'Teachers/edit-teacher.html', {'teacher': teacher})
 

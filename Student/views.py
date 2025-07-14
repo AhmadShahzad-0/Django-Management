@@ -43,7 +43,7 @@ def add_student(request):
         # Success Message
         create_notification(request.user, f"Added Student: {student.first_name} {student.last_name}")
         messages.success(request, "Student added Successfully")
-        # return render(request, "student_list")
+        return redirect("student_list")
 
     return render(request, "Students/add-student.html", {})
 
