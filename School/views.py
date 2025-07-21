@@ -3,10 +3,12 @@ from .models import Department, Subject, Notification
 from django.contrib import messages
 from datetime import datetime
 from django.http import JsonResponse, HttpResponseForbidden
+from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 # Create your views here.
 def index(request):
-    return render(request, "Home/index.html", {})
+    return render(request, "authentication/login.html", {})
 
 def dashboard(request):
     unread_notification = Notification.objects.filter(user=request.user, is_read=False)
@@ -42,96 +44,103 @@ def teacher_dashboard(request):
     return render(request, "Teachers/teacher-dashboard.html", {
         'unread_notification_count': unread_notification_count,})
 
-# Add Department
-def add_department(request):
-    if request.method == 'POST':
-        department_id = request.POST.get('department_id')
-        name = request.POST.get('name')
-        head_of_department = request.POST.get('head_of_department')
-        start_date = request.POST.get('start_date')
-        number_of_students = request.POST.get('number_of_students')
 
-        if Department.objects.filter(department_id=department_id).exists():
-            messages.error(request, "Department ID already exists.")
-        else:
-            Department.objects.create(
-                department_id=department_id,
-                name=name,
-                head_of_department=head_of_department,
-                start_date=start_date,
-                number_of_students=number_of_students
-            )
-            messages.success(request, "Department added successfully.")
-            return redirect('list_departments')
+User = get_user_model()
 
-    return render(request, 'Departments/add-department.html')
+def is_admin(user):
+    return user.is_authenticated and user.is_admin
 
+# ------------------ DEPARTMENT ------------------
 
-# List Departments
-def list_departments(request):
+@login_required
+@user_passes_test(is_admin)
+def department_list(request):
     departments = Department.objects.all()
-    return render(request, 'Departments/departments.html', {'departments': departments})
+    return render(request, 'Academic/departments.html', {'departments': departments})
 
-# Edit Department
-def edit_department(request, pk):
+
+@login_required
+@user_passes_test(is_admin)
+def department_create(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        hod_id = request.POST.get('hod')
+        start_date = request.POST.get('start_date')
+        hod = User.objects.get(id=hod_id) if hod_id else None
+
+        Department.objects.create(name=name, hod=hod, start_date=start_date)
+        return redirect('department_list')
+
+    teachers = User.objects.filter(is_teacher=True)
+    return render(request, 'Academic/add-department.html', {'teachers': teachers})
+
+
+@login_required
+@user_passes_test(is_admin)
+def department_update(request, pk):
     department = get_object_or_404(Department, pk=pk)
 
     if request.method == 'POST':
-        department.department_id = request.POST.get('department_id')
         department.name = request.POST.get('name')
-        department.head_of_department = request.POST.get('head_of_department')
+        hod_id = request.POST.get('hod')
+        department.hod = User.objects.get(id=hod_id) if hod_id else None
         department.start_date = request.POST.get('start_date')
-        department.number_of_students = request.POST.get('number_of_students')
-
         department.save()
-        messages.success(request, "Department updated successfully.")
-        return redirect('list_departments', pk=pk)
+        return redirect('department_list')
 
-    return render(request, 'Departments/edit-department.html', {'department': department})
+    teachers = User.objects.filter(is_teacher=True)
+    return render(request, 'Academic/edit-department.html', {'department': department, 'teachers': teachers})
 
 
-# Delete Department
-def delete_department(request, pk):
+@login_required
+@user_passes_test(is_admin)
+def department_delete(request, pk):
     department = get_object_or_404(Department, pk=pk)
-    department.delete()
-    messages.success(request, "Department deleted successfully.")
-    return redirect('list_departments')
-
-# Add Subject
-def add_subject(request):
     if request.method == 'POST':
-        subject_id = request.POST.get('subject_id')
-        subject_name = request.POST.get('subject_name')
-        subject_class = request.POST.get('subject_class')
+        department.delete()
+        return redirect('department_list')
+    # return render(request, 'academic/confirm_delete.html', {'object': department, 'type': 'Department'})
 
-        Subject.objects.create(
-            subject_id=subject_id,
-            subject_name=subject_name,
-            subject_class=subject_class
-        )
-        return redirect('list_subjects')
-    return render(request, 'Subjects/add-subject.html')
 
-# List Subjects
-def list_subjects(request):
+# ------------------ SUBJECT ------------------
+
+@login_required
+@user_passes_test(is_admin)
+def subject_list(request):
     subjects = Subject.objects.all()
-    return render(request, 'Subjects/subjects.html', {'subjects': subjects})
+    return render(request, 'Academic/subjects.html', {'subjects': subjects})
 
-# Edit Subject
-def edit_subject(request, pk):
+
+@login_required
+@user_passes_test(is_admin)
+def subject_create(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        class_name = request.POST.get('class_name')
+        Subject.objects.create(name=name, class_name=class_name)
+        return redirect('subject_list')
+    return render(request, 'Academic/add-subject.html')
+
+
+@login_required
+@user_passes_test(is_admin)
+def subject_update(request, pk):
     subject = get_object_or_404(Subject, pk=pk)
 
     if request.method == 'POST':
-        subject.subject_id = request.POST.get('subject_id')
-        subject.subject_name = request.POST.get('subject_name')
-        subject.subject_class = request.POST.get('subject_class')
+        subject.name = request.POST.get('name')
+        subject.class_name = request.POST.get('class_name')
         subject.save()
-        return redirect('list_subjects')
+        return redirect('subject_list')
 
-    return render(request, 'Subjects/edit-subject.html', {'subject': subject})
+    return render(request, 'Academic/edit-subject.html', {'subject': subject})
 
-# Delete Subject
-def delete_subject(request, pk):
+
+@login_required
+@user_passes_test(is_admin)
+def subject_delete(request, pk):
     subject = get_object_or_404(Subject, pk=pk)
-    subject.delete()
-    return redirect('list_subjects')
+    if request.method == 'POST':
+        subject.delete()
+        return redirect('subject_list')
+    # return render(request, 'academic/confirm_delete.html', {'object': subject, 'type': 'Subject'})

@@ -1,26 +1,34 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.utils import timezone
 import uuid
 
 # Create your models here.
 class Department(models.Model):
-    department_id = models.CharField(max_length=10, unique=True)
     name = models.CharField(max_length=100)
-    head_of_department = models.CharField(max_length=100)
-    start_date = models.DateField()
-    number_of_students = models.PositiveIntegerField()
+    hod = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        limit_choices_to={'is_teacher': True},  # Only teacher users can be HOD
+        related_name='departments_led'
+    )
+    start_date = models.DateField(default=timezone.now)
+
+    def num_students(self):
+        return self.students.count()  # Reverse relation from Student model
 
     def __str__(self):
-        return f"{self.name} ({self.department_id})"
+        return self.name
     
 class Subject(models.Model):
-    subject_id = models.CharField(max_length=20, unique=True)
-    subject_name = models.CharField(max_length=100)
-    subject_class = models.CharField(max_length=50)
+    name = models.CharField(max_length=100, default='OOP')
+    class_name = models.CharField(max_length=100, default='9')  # e.g., "BSc Computer Science", "Grade 10"
 
     def __str__(self):
-        return f"{self.subject_name} ({self.subject_class})"
+        return f"{self.name} ({self.class_name})"
     
 class Notification(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

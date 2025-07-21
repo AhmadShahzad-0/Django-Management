@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from itertools import count
+from School.models import *
 
 # Create your models here.
 
@@ -35,6 +36,8 @@ class Student(models.Model):
     student_image = models.ImageField(upload_to='Student/', blank=True)
     parent = models.OneToOneField(Parent, on_delete=models.CASCADE)
     slug = models.SlugField(max_length=255, unique=True, blank=True)
+    subjects = models.ManyToManyField(Subject, related_name="students")
+    department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, related_name="students")
 
     def save(self, *args, **kwargs):
         if not self.slug:

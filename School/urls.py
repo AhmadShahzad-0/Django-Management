@@ -8,13 +8,15 @@ urlpatterns = [
     path('teacher-dashboard/', views.teacher_dashboard, name='teacher_dashboard'),
     path('notification/mark-as-read/', views.mark_notification_as_read, name='mark_notification_as_read' ),
     path('notification/clear-all', views.clear_all_notification, name= "clear_all_notification"),
-    # Department URLs
-    path('departments/add/', views.add_department, name='add_department'),
-    path('departments/', views.list_departments, name='list_departments'),
-    path('departments/<int:pk>/edit/', views.edit_department, name='edit_department'),
-    path('departments/<int:pk>/delete/', views.delete_department, name='delete_department'),
-    path('subjects/add/', views.add_subject, name='add_subject'),
-    path('subjects/', views.list_subjects, name='list_subjects'),
-    path('subjects/<int:pk>/edit/', views.edit_subject, name='edit_subject'),
-    path('subjects/<int:pk>/delete/', views.delete_subject, name='delete_subject'),
+    # Department
+    path('departments/', views.department_list, name='department_list'),
+    path('departments/create/', views.department_create, name='department_create'),
+    path('departments/<int:pk>/edit/', views.department_update, name='department_update'),
+    path('departments/<int:pk>/delete/', views.department_delete, name='department_delete'),
+
+    # Subject
+    path('subjects/', views.subject_list, name='subject_list'),
+    path('subjects/create/', views.subject_create, name='subject_create'),
+    path('subjects/<int:pk>/edit/', views.subject_update, name='subject_update'),
+    path('subjects/<int:pk>/delete/', views.subject_delete, name='subject_delete'),
 ]
