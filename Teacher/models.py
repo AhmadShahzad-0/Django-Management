@@ -17,10 +17,6 @@ class Teacher(models.Model):
     teacher_qualification = models.CharField(max_length=50)
     teacher_experience = models.CharField(max_length=100)
     teacher_image = models.ImageField(upload_to='teachers/', blank=True, null=True)
-    teacher_class = models.CharField(max_length=20)
-    teacher_section = models.CharField(max_length=5)
-    teacher_subject = models.CharField(max_length=50)
-
 
     # Address
     teacher_address = models.TextField()

@@ -51,9 +51,6 @@ def add_teacher(request):
                     teacher_state=request.POST.get('teacher_state'),
                     teacher_zip_code=request.POST.get('teacher_zipcode'),
                     teacher_country=request.POST.get('teacher_country'),
-                    teacher_class=request.POST.get('teacher_class'),
-                    teacher_section=request.POST.get('teacher_section'),
-                    teacher_subject=request.POST.get('teacher_subject'),
                     teacher_image=request.FILES.get('teacher_image')
                 )
 
@@ -125,9 +122,6 @@ def edit_teacher(request, pk):
         teacher.teacher_state = request.POST.get('teacher_state')
         teacher.teacher_zip_code = request.POST.get('teacher_zipcode')
         teacher.teacher_country = request.POST.get('teacher_country')
-        teacher.teacher_class = request.POST.get('teacher_class')
-        teacher.teacher_section = request.POST.get('teacher_section')
-        teacher.teacher_subject = request.POST.get('teacher_subject')
         teacher.save()
         create_notification(request.user, f"Updated Teacher: {teacher.teacher_name}")
 

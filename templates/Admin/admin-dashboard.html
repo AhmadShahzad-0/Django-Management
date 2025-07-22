@@ -1,0 +1,229 @@
+{% extends 'Home/base.html' %}
+{% load static %}
+{% block body %}
+
+<div class="page-wrapper">
+  <div class="content container-fluid">
+
+    <!-- Welcome & Stats -->
+    <div class="page-header">
+      <div class="row">
+        <div class="col-sm-12">
+          <h3 class="page-title">Welcome Admin!</h3>
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item active">Dashboard</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stat Cards -->
+    <div class="row">
+      <div class="col-xl-3 col-sm-6 col-12 d-flex">
+        <div class="card bg-warning-light w-100">
+          <div class="card-body">
+            <div class="dash-widget-header">
+              <span class="dash-widget-icon text-warning border-warning">
+                <i class="fas fa-user-graduate"></i>
+              </span>
+              <div class="dash-count">
+                <h3>50055</h3>
+              </div>
+            </div>
+            <div class="dash-widget-info">
+              <h6 class="text-muted">Students</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-sm-6 col-12 d-flex">
+        <div class="card bg-info-light w-100">
+          <div class="card-body">
+            <div class="dash-widget-header">
+              <span class="dash-widget-icon text-info border-info">
+                <i class="fas fa-award"></i>
+              </span>
+              <div class="dash-count">
+                <h3>50+</h3>
+              </div>
+            </div>
+            <div class="dash-widget-info">
+              <h6 class="text-muted">Awards</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-sm-6 col-12 d-flex">
+        <div class="card bg-danger-light w-100">
+          <div class="card-body">
+            <div class="dash-widget-header">
+              <span class="dash-widget-icon text-danger border-danger">
+                <i class="fas fa-building"></i>
+              </span>
+              <div class="dash-count">
+                <h3>30+</h3>
+              </div>
+            </div>
+            <div class="dash-widget-info">
+              <h6 class="text-muted">Departments</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-sm-6 col-12 d-flex">
+        <div class="card bg-purple-light w-100">
+          <div class="card-body">
+            <div class="dash-widget-header">
+              <span class="dash-widget-icon text-purple border-purple">
+                <i class="fas fa-dollar-sign"></i>
+              </span>
+              <div class="dash-count">
+                <h3>$505</h3>
+              </div>
+            </div>
+            <div class="dash-widget-info">
+              <h6 class="text-muted">Revenue</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Graphs -->
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card card-chart">
+          <div class="card-header">
+            <h4 class="card-title">Revenue</h4>
+            <div class="dropdown float-right">
+              <select class="form-control">
+                <option>Today</option>
+              </select>
+            </div>
+          </div>
+          <div class="card-body">
+            <canvas id="revenueChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card card-chart">
+          <div class="card-header">
+            <h4 class="card-title">Number of Students</h4>
+            <div class="dropdown float-right">
+              <select class="form-control">
+                <option>Today</option>
+              </select>
+            </div>
+          </div>
+          <div class="card-body">
+            <canvas id="studentChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tables -->
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card card-table">
+          <div class="card-header">
+            <h4 class="card-title">Star Students</h4>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover mb-0">
+                <thead>
+                  <tr>
+                    <th>ID</th><th>Name</th><th>Marks</th><th>%</th><th>Year</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>PRE2209</td><td>John Smith</td><td>1185</td><td>98%</td><td>2019</td></tr>
+                  <tr><td>PRE1245</td><td>Jolie Hoskins</td><td>1195</td><td>99.5%</td><td>2018</td></tr>
+                  <tr><td>PRE1625</td><td>Pennington Joy</td><td>1196</td><td>99.6%</td><td>2017</td></tr>
+                  <tr><td>PRE2516</td><td>Millie Marsden</td><td>1187</td><td>98.2%</td><td>2016</td></tr>
+                  <tr><td>PRE2209</td><td>John Smith</td><td>1185</td><td>98%</td><td>2015</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title">Student Activity</h4>
+          </div>
+          <div class="card-body">
+            <ul class="activity-feed">
+              <li class="feed-item"><div class="feed-date">APR 13</div> John Doe won 1st place in <strong>“Chess”</strong></li>
+              <li class="feed-item"><div class="feed-date">MAR 21</div> Justin Lee participated in <strong>“Carrom”</strong></li>
+              <li class="feed-item"><div class="feed-date">FEB 2</div> Justin Lee attended <strong>St. John School</strong> conference</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Social Stats -->
+    <div class="row">
+      <div class="col-md-3 col-sm-6 text-center">
+        <div class="social-box facebook">
+          <p>50,095<br><span>Likes</span></p>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6 text-center">
+        <div class="social-box twitter">
+          <p>48,596<br><span>Follows</span></p>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6 text-center">
+        <div class="social-box instagram">
+          <p>52,085<br><span>Follows</span></p>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6 text-center">
+        <div class="social-box linkedin">
+          <p>69,050<br><span>Follows</span></p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Chart JS CDN (or use static if downloaded) -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx1 = document.getElementById('revenueChart').getContext('2d');
+  new Chart(ctx1, {
+    type: 'line',
+    data: {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+      datasets: [
+        { label: 'Teachers', data: [30, 40, 45, 35, 50, 60, 30], borderColor: 'blue', fill: true },
+        { label: 'Students', data: [20, 35, 55, 40, 20, 50, 10], borderColor: 'orange', fill: true }
+      ]
+    }
+  });
+
+  const ctx2 = document.getElementById('studentChart').getContext('2d');
+  new Chart(ctx2, {
+    type: 'bar',
+    data: {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+      datasets: [
+        { label: 'Boys', data: [400, 600, 700, 800, 900, 850, 950], backgroundColor: '#f6c23e' },
+        { label: 'Girls', data: [300, 500, 800, 600, 950, 1000, 980], backgroundColor: '#36b9cc' }
+      ]
+    }
+  });
+</script>
+
+{% endblock %}

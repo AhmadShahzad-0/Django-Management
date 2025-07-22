@@ -31,16 +31,23 @@
                   </div>
                 </div>
                 <div class="col-12 col-sm-6">
-                  <div class="form-group">
-                    <label>Head of Department</label>
-                    <select name="hod" class="form-control" required>
-                      <option value="">-- Select HOD --</option>
-                      {% for teacher in teachers %}
-                        <option value="{{ teacher.id }}">{{ teacher.get_full_name }}</option>
-                      {% endfor %}
-                    </select>
-                  </div>
-                </div>
+  <div class="form-group">
+    <label>Head of Department</label>
+    <select name="hod" class="form-control" required>
+      <option value="">-- Select HOD --</option>
+      {% for teacher in teachers %}
+        <option value="{{ teacher.id }}">
+          {% if teacher.first_name or teacher.last_name %}
+            {{ teacher.first_name }} {{ teacher.last_name }}
+          {% else %}
+            {{ teacher.username }}
+          {% endif %}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+</div>
+
                 <div class="col-12 col-sm-6">
                   <div class="form-group">
                     <label>Start Date</label>

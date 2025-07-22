@@ -104,7 +104,7 @@
                         <ul>
                            {% if user.is_authenticated %}
                             {% if user.is_admin %}
-                           <li><a href="index.html" class="active">Admin Dashboard</a></li>
+                           <li><a href="{% url 'admin_dashboard' %}" class="active">Admin Dashboard</a></li>
                             {% elif user.is_teacher %}
                            <li><a href="{% url 'teacher_dashboard' %}">Teacher Dashboard</a></li>
                             {% elif user.is_student %}

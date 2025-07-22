@@ -4,9 +4,9 @@ from .models import Teacher
 
 @admin.register(Teacher)
 class TeacherAdmin(admin.ModelAdmin):
-    list_display = ('teacher_id', 'teacher_name', 'teacher_class', 'teacher_gender', 'teacher_subject', 'teacher_section', 'teacher_mobile', 'teacher_address', 'image_preview')
-    search_fields = ('teacher_id', 'teacher_name', 'teacher_subject', 'teacher_mobile')
-    list_filter = ('teacher_gender', 'teacher_class', 'teacher_section')
+    list_display = ('teacher_id', 'teacher_name', 'teacher_gender', 'teacher_mobile', 'teacher_address', 'image_preview')
+    search_fields = ('teacher_id', 'teacher_name', 'teacher_mobile')
+    list_filter = ('teacher_gender',)
     readonly_fields = ('image_preview',)
 
     def image_preview(self, obj):
